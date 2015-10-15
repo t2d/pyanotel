@@ -1,0 +1,32 @@
+from twisted.trial import unittest
+from twisted.test import proto_helpers
+from twisted.internet import reactor
+
+from user import User, UserClientProtocol
+import constants
+
+
+class PagingTestCase(unittest.TestCase):
+    def setUp(self):
+        self.reactor = reactor
+        self.user = User(constants.user1_id, constants.user1_secret, constants.locations["location00000000"], self.reactor)
+        self.transport = proto_helpers.FakeDatagramTransport()
+        self.user.paging_listener.transport = self.transport
+
+        self.tcp = proto_helpers.StringTransport()
+        self.user.network_connector.protocol.transport = self.tcp
+        self.connection = UserClientProtocol()
+        self.connection.factory = self.user.network_connector
+        self.connection.makeConnection(self.tcp)
+        self.user.network_connector.proto_instance = self.connection
+
+    def tearDown(self):
+        self.user.listen_port.stopListening()
+        self.user.network_connector.proto_instance.transport.loseConnection()
+        self.reactor.stop()
+
+
+    def test_location_update(self):
+        pass
+
+    #FIXME

@@ -1,0 +1,9 @@
+config rule
+        option name 'Anotel Paging'
+        option target   'ACCEPT'
+        option src      'wan'
+        option proto    'udp'
+        option dest_port '60000'
+
+opkg install socat
+socat -u -T1 UDP-LISTEN:60000,fork UDP-DATAGRAM:192.168.101.255:60001,broadcast

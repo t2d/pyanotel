@@ -1,0 +1,4 @@
+Requirements
+
+apt-get install libgmp-dev build-essential python-dev python-pip
+pip install seccure
